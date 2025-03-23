@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct otus_suffixApp: App {
+struct SuffixApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

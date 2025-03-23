@@ -8,14 +8,51 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var viewModel = SuffixArrayViewModel()
+
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            TextField("Введите текст...", text: $viewModel.inputText)
+                .padding()
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+
+            Picker("Выбор режима", selection: $viewModel.pickerSelection) {
+                Text("Все суффиксы").tag(0)
+                Text("Топ-10 (3 буквы)").tag(1)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding(.horizontal)
+
+            if viewModel.pickerSelection == 0 {
+                HStack {
+                    TextField("Поиск суффиксов...", text: $viewModel.searchQuery)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                    Button(action: viewModel.toggleSort) {
+                        Image(systemName: viewModel.sortAsc ? "arrow.up" : "arrow.down")
+                    }
+                }
+                .padding(.horizontal)
+
+                List(viewModel.suffixes) { suffix in
+                    HStack {
+                        Text(suffix.text)
+                        Spacer()
+                        Text("\(suffix.count)")
+                            .foregroundColor(.secondary)
+                    }
+                }
+            } else {
+                List(viewModel.topSuffixes) { suffix in
+                    HStack {
+                        Text(suffix.text)
+                        Spacer()
+                        Text("\(suffix.count)")
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
         }
-        .padding()
     }
 }
 
